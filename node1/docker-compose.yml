@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: minio_node1
+    network_mode: host
+    env_file:
+      - .env
+    volumes:
+      - node1-1:/data1
+      - node1-2:/data2
+    command: >
+      server
+      --console-address ":9001"
+      http://172.16.129.131/data{1..2}
+      http://172.16.129.132/data{1..2}
+      http://172.16.129.133/data{1..2}
+      http://172.16.129.134/data{1..2}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -GET http://172.16.129.131:9001"]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+volumes:
+  node1-1:
+  node1-2:
